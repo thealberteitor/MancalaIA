@@ -17,7 +17,6 @@ using namespace std;
 
 TaskStruct::TaskStruct() {
 	// Inicializar las variables necesarias para ejecutar la partida
-
 }
 
 TaskStruct::~TaskStruct() {
@@ -47,12 +46,12 @@ void TaskStruct::valorCasilla(int jugador, const GameState &state, const int &va
 */
 
 
-double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alfa, int beta, int profundidad){
+double TaskStruct::PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alfa, int beta, int profundidad){
 
 	cerr << "Voy a crear el árbol, me meto en la función " << endl;
 
 
-	if(profundidad==4 || arbol[nodoActual].juego.isFinalState()){
+	if(profundidad==2 || arbol[nodoActual].juego.isFinalState()){
 		GameState play;
 		double minim=9999, maxim=-9999, valor;
 
@@ -61,8 +60,8 @@ double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alf
 				play = arbol[nodoActual].juego.simulateMove( (Move) i);
 				valor=play.getScore(jugador);
 
-				if(arbol[nodoActual].nivel%2==0){ //Si soy max
-
+				//if(arbol[nodoActual].nivel%2==0){ //Si soy max
+				if(arbol[nodoActual].juego.getCurrentPlayer()==getPlayer()){
 					if(valor>maxim)
 						maxim=valor;
 				}
@@ -73,7 +72,8 @@ double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alf
 			}
 		}
 
-		if(arbol[nodoActual].nivel%2==0)
+		if(arbol[nodoActual].juego.getCurrentPlayer()==getPlayer())
+		//if(arbol[nodoActual].nivel%2==0)
 			return maxim;
 		else
 			return minim;
@@ -81,8 +81,6 @@ double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alf
 	}
 
 
-	int numHijos;
-	Move accionAnterior;
 	double valor;
 
 
@@ -94,10 +92,10 @@ double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alf
 			//Generamos el hijo
 			GameState Jhijo= arbol[nodoActual].juego.simulateMove((Move) i);  //Genero juego
 
-							//acción    //padre 										//Mov
-			Nodo hijo(Jhijo, hijo.padre=&arbol[nodoActual], (Move) i);
+							//acción    //padre 		  		//Mov			//nivel++
+			Nodo hijo(Jhijo, &arbol[nodoActual], (Move) i, arbol[nodoActual].nivel+1);
 
-			cerr << "Genero hijo " << hijo << "con padre " << hijo.padre << endl;
+			cerr << hijo;
 
 
 			arbol.push_back(hijo);
@@ -105,10 +103,11 @@ double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alf
 			int posHijo = arbol.size()-1;
 
 			//Búsqueda en profundidad para saber el valor del hijo
-			//Comprobar si roba porque si roba el prox turno es (jugador+1)%2
-			int valorHijo= PodaAlfaBeta(arbol, posHijo, jugador, alfa, beta, profundidad+1);
+			int valorHijo= PodaAlfaBeta(arbol, posHijo, Jhijo.getCurrentPlayer(), alfa, beta, profundidad+1);
 
-			if(arbol[nodoActual].nivel%2==0){ //Si soy Max
+			//¿Cómo puedo saber si soy max? - si el getCurrentPLayer soy yo
+			//if(arbol[nodoActual].nivel%2==0){ //Si soy Max
+			if(arbol[nodoActual].juego.getCurrentPlayer()==getPlayer()){
 
 				if(alfa<valorHijo){
 					arbol[nodoActual].mejorHijo= posHijo;
@@ -131,7 +130,8 @@ double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alf
 		}
 	}
 
-	if(arbol[nodoActual].nivel%2 ==0)    //Si soy MAX
+	//if(arbol[nodoActual].nivel%2 ==0)    //Si soy MAX
+	if(arbol[nodoActual].juego.getCurrentPlayer()==getPlayer())
 		return alfa;
 	else																	//Si soy Min
 		return beta;
@@ -205,7 +205,7 @@ Move TaskStruct::nextMove(const vector<Move> &adversary, const GameState &state)
 	vector<Nodo> arbol;
 	arbol.push_back(raiz);
 
-	PodaAlfaBeta(arbol, 0, turno, alfa, beta, profundidad);
+	PodaAlfaBeta(arbol, 0, state.getCurrentPlayer() , alfa, beta, profundidad);
 
 	return arbol[arbol[0].mejorHijo].accion;
 }

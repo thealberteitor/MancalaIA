@@ -24,10 +24,11 @@ struct Nodo{
 	int valor;       //No sé pero sirve
 
 
-	Nodo(GameState jueg, Nodo *papi, Move hacer){
+	Nodo(GameState jueg, Nodo *papi, Move hacer, int level){
 		juego=jueg;
 		padre=papi;
 		accion=hacer;
+		nivel=level;
 	}
 
 	//Creamos así la raíz
@@ -76,10 +77,11 @@ class TaskStruct:Bot {
 		void initialize();
 		string getName();
 		Move nextMove(const vector<Move> &adversary, const GameState &state);
+		double PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player jugador, int alfa, int beta, int profundidad);
+
 	private:
 
 		const int NIVEL=10;
-
 
 
 };
