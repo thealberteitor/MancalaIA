@@ -51,7 +51,7 @@ double TaskStruct::PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player juga
 	cerr << "Voy a crear el árbol, me meto en la función " << endl;
 
 
-	if(profundidad==2 || arbol[nodoActual].juego.isFinalState()){
+	if(profundidad==3 || arbol[nodoActual].juego.isFinalState()){
 		GameState play;
 		double minim=9999, maxim=-9999, valor;
 
@@ -106,17 +106,18 @@ double TaskStruct::PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player juga
 			int valorHijo= PodaAlfaBeta(arbol, posHijo, Jhijo.getCurrentPlayer(), alfa, beta, profundidad+1);
 
 			//¿Cómo puedo saber si soy max? - si el getCurrentPLayer soy yo
-			//if(arbol[nodoActual].nivel%2==0){ //Si soy Max
-			if(arbol[nodoActual].juego.getCurrentPlayer()==getPlayer()){
+			//if(arbol[nodoActual].nivel%2==0){
+			if(arbol[nodoActual].juego.getCurrentPlayer()==getPlayer()){   //Si soy Max
 
 				if(alfa<valorHijo){
+					alfa=valorHijo;
 					arbol[nodoActual].mejorHijo= posHijo;
 					arbol[nodoActual].valor=alfa;
 				}
 				if(alfa>=beta)
 					return beta;
 			}
-			else{   //Si soy Min
+			else{   																											//Si soy Min
 				if(beta>valorHijo){
 					beta=valorHijo;
 					arbol[nodoActual].mejorHijo= posHijo;
