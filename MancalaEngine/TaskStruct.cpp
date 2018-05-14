@@ -51,10 +51,12 @@ double TaskStruct::PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player juga
 	cerr << "Voy a crear el árbol, me meto en la función " << endl;
 
 
-	if(profundidad==3 || arbol[nodoActual].juego.isFinalState()){
+	if(profundidad==4 || arbol[nodoActual].juego.isFinalState()){
 		GameState play;
 		double minim=9999, maxim=-9999, valor;
 
+		return arbol[nodoActual].juego.getScore(jugador);
+		/*
 		for(int i=1; i<=6; i++){
 			if(arbol[nodoActual].juego.getSeedsAt(jugador, (Position) i)){	//Si hay semillas en la casilla i
 				play = arbol[nodoActual].juego.simulateMove( (Move) i);
@@ -77,7 +79,7 @@ double TaskStruct::PodaAlfaBeta(vector<Nodo> &arbol, int nodoActual, Player juga
 			return maxim;
 		else
 			return minim;
-
+			*/
 	}
 
 
