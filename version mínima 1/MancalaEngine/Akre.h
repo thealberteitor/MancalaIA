@@ -24,7 +24,7 @@ class Akre:Bot {
 
 	private:
 
-		const int NIVEL=5;
+		const int NIVEL=7;
 		int mejorHijo ;
 
 

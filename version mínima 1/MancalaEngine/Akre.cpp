@@ -34,7 +34,44 @@ int Akre::AlfaBeta(const GameState &state, int alfa, int beta, int profundidad){
 
 	if(profundidad==NIVEL || state.isFinalState()){
 
-			return state.getScore(getPlayer());		// HEURÍSTICA
+		if (state.isFinalState())
+			return state.getScore(getPlayer());
+		else { // HEURÍSTICA
+
+			// ROBAR TURNO
+
+			int mejorOpcion = 0 ;
+			int valores[6] = {0,0,0,0,0,0};
+
+			for (int i = 1 ; i <= 6 ; i++) {
+				if (state.getSeedsAt(getPlayer(), (Position) i) == i)
+					valores[i-1] = state.getScore(getPlayer()) + 1 + i;
+		  }
+
+			for (int i = 0 ; i < 6 ; i++) {
+				if (valores[i] > mejorOpcion)
+					mejorOpcion = valores[i];
+			}
+
+			if (mejorOpcion != 0)
+				return mejorOpcion ;
+			else
+				return state.getScore(getPlayer());
+			
+
+		}
+
+
+
+		/* ROBAR SEMILLAS
+
+			bool puedoRobar[6] = {false} ;
+
+			for (int i = 0 ; i <= 6 ; i++) {
+				if()
+		}
+
+		*/
 	}
 
 
@@ -58,7 +95,6 @@ int Akre::AlfaBeta(const GameState &state, int alfa, int beta, int profundidad){
 				if(beta>valorHijo){
 					beta=valorHijo;
 					mejorHijo= i;
-
 				}
 				if(beta<=alfa)
 					return alfa;
@@ -67,8 +103,8 @@ int Akre::AlfaBeta(const GameState &state, int alfa, int beta, int profundidad){
 		}
 	}
 
-																							// Nodo MAX
-	if(state.getCurrentPlayer()==getPlayer())
+
+	if(state.getCurrentPlayer()==getPlayer())		// Nodo MAX
 		return alfa;
 	else																				// Nodo MIN
 		return beta;
